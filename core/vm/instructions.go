@@ -577,17 +577,29 @@ func opCoinbase(pc *uint64, interpreter *EVMInterpreter, contract *Contract, mem
 }
 
 func opTimestamp(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	stack.push(math.U256(interpreter.intPool.get().Set(interpreter.evm.Time)))
+	timestamp := interpreter.evm.Time
+	if interpreter.evm.TimeProvider != nil {
+		timestamp = interpreter.evm.TimeProvider()
+	}
+	stack.push(math.U256(interpreter.intPool.get().Set(timestamp)))
 	return nil, nil
 }
 
 func opNumber(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	stack.push(math.U256(interpreter.intPool.get().Set(interpreter.evm.BlockNumber)))
+	blockNumber := interpreter.evm.BlockNumber
+	if interpreter.evm.BlockNumberProvider != nil {
+		blockNumber = interpreter.evm.BlockNumberProvider()
+	}
+	stack.push(math.U256(interpreter.intPool.get().Set(blockNumber)))
 	return nil, nil
 }
 
 func opDifficulty(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	stack.push(math.U256(interpreter.intPool.get().Set(interpreter.evm.Difficulty)))
+	difficulty := interpreter.evm.Difficulty
+	if interpreter.evm.DifficultyProvider != nil {
+		difficulty = interpreter.evm.DifficultyProvider()
+	}
+	stack.push(math.U256(interpreter.intPool.get().Set(difficulty)))
 	return nil, nil
 }
 

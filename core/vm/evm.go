@@ -88,6 +88,11 @@ type Context struct {
 	BlockNumber *big.Int       // Provides information for NUMBER
 	Time        *big.Int       // Provides information for TIME
 	Difficulty  *big.Int       // Provides information for DIFFICULTY
+
+	// Block information provided as provider to enable lazy valuation
+	BlockNumberProvider func() *big.Int
+	TimeProvider        func() *big.Int
+	DifficultyProvider  func() *big.Int
 }
 
 // EVM is the Ethereum Virtual Machine base object and provides
