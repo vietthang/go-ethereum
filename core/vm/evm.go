@@ -47,6 +47,10 @@ func run(evm *EVM, contract *Contract, input []byte, readOnly bool) ([]byte, err
 		if evm.ChainConfig().IsByzantium(evm.BlockNumber) {
 			precompiles = PrecompiledContractsByzantium
 		}
+		// hook other precompile contracts
+		if evm.PrecompiledContracts != nil {
+			precompiles = evm.PrecompiledContracts
+		}
 		if p := precompiles[*contract.CodeAddr]; p != nil {
 			return RunPrecompiledContract(p, input, contract)
 		}
@@ -93,6 +97,9 @@ type Context struct {
 	BlockNumberProvider func() *big.Int
 	TimeProvider        func() *big.Int
 	DifficultyProvider  func() *big.Int
+
+	// map of precompiled contract, useful to add "virtual" contract
+	PrecompiledContracts map[common.Address]PrecompiledContract
 }
 
 // EVM is the Ethereum Virtual Machine base object and provides
